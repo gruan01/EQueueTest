@@ -14,15 +14,8 @@ using System.Threading.Tasks;
 namespace Handlers {
 
 
-    [Export(typeof(IMessageHandler))]
-    [EQueueSet(Const.Group, Const.TOPIC_3)]
+    [Export(typeof(BaseHandler))]
     public class Handler3 : BaseHandler<ExecCmd> {
-
-        [Import]
-        public ILog Logger {
-            get;
-            set;
-        }
 
 
         public override Task<bool> Handle(ExecCmd data, EQueue.Protocols.QueueMessage message) {

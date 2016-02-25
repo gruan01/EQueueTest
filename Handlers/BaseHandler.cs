@@ -1,7 +1,9 @@
-﻿using ECommon.Logging;
+﻿using Common;
+using ECommon.Logging;
 using ECommon.Serializing;
 using EQueue.Clients.Consumers;
 using EQueue.Protocols;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -10,16 +12,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Handlers {
-    public abstract class BaseHandler<T> : IMessageHandler where T : class {
 
+    public abstract class BaseHandler : IMessageHandler {
         [Import]
-        private Lazy<ILogger> Logger {
+        protected Lazy<ILog> Logger {
             get;
             set;
         }
 
         [Import]
-        private Lazy<IBinarySerializer> Serializer {
+        protected Lazy<IBinarySerializer> Serializer {
             get;
             set;
         }
@@ -30,8 +32,27 @@ namespace Handlers {
             }
         }
 
-        public abstract Task<bool> Handle(T data, QueueMessage message);
+        public abstract EQueueSetAttribute EQueueSet {
+            get;
+        }
 
+        public abstract void Handle(QueueMessage message, IMessageContext context);
+    }
+
+    public abstract class BaseHandler<T> : BaseHandler where T : class {
+
+
+        public override EQueueSetAttribute EQueueSet {
+            get {
+                //return typeof(T).CustomAttributes.OfType<EQueueSetAttribute>().FirstOrDefault();
+                return (EQueueSetAttribute)typeof(T)
+                    .GetCustomAttributes(typeof(EQueueSetAttribute), false)
+                    .FirstOrDefault();
+            }
+        }
+
+
+        public abstract Task<bool> Handle(T data, QueueMessage message);
 
         protected virtual T ParseData(byte[] datas) {
             try {
@@ -41,7 +62,7 @@ namespace Handlers {
             }
         }
 
-        public async void Handle(QueueMessage message, IMessageContext context) {
+        public override async void Handle(QueueMessage message, IMessageContext context) {
             var data = this.ParseData(message.Body);
             if (data == null) {
                 this.Logger.Value.Fatal(string.Format("Topic : {0} only accept data type : {1} , message canceled", message.Topic, typeof(T).FullName));

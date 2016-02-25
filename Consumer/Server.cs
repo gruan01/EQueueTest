@@ -1,5 +1,6 @@
 ﻿using Common;
 using EQueue.Clients.Consumers;
+using Handlers;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace ConsumerClient {
         private List<Consumer> Consumers = new List<Consumer>();
 
         [ImportMany]
-        public IEnumerable<IMessageHandler> Handlers {
+        public IEnumerable<BaseHandler> Handlers {
             get;
             set;
         }
@@ -49,10 +50,12 @@ namespace ConsumerClient {
         private void Subscribe() {
 
             foreach (var h in this.Handlers) {
-                var set = h.GetType()
-                    .CustomAttributes
-                    .OfType<EQueueSetAttribute>()
-                    .FirstOrDefault();
+
+                //var set = h.GetType()
+                //    .CustomAttributes
+                //    .OfType<EQueueSetAttribute>()
+                //    .FirstOrDefault();
+                var set = h.EQueueSet;
 
                 if (set != null) {
                     var consumer = new Consumer(set.Group)

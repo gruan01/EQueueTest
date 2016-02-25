@@ -14,15 +14,8 @@ using System.Threading.Tasks;
 
 namespace Handlers {
 
-    [Export(typeof(IMessageHandler))]
-    [EQueueSet(Const.Group, Const.TOPIC_1)]
+    [Export(typeof(BaseHandler))]
     public class Handler1 : BaseHandler<UrlRequest> {
-
-        [Import]
-        public ILog Logger {
-            get;
-            set;
-        }
 
         public async override Task<bool> Handle(UrlRequest data, QueueMessage message) {
             using (var client = new WebClient()) {

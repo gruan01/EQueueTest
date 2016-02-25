@@ -14,6 +14,7 @@ using log4net;
 using ECommon.ProtocolBuf;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using EQueue.Configurations;
 
 namespace ConsumerClient {
     public class Program {
@@ -21,6 +22,17 @@ namespace ConsumerClient {
         static void Main(string[] args) {
 
             var logger = log4net.LogManager.GetLogger(typeof(Program));
+
+
+            ECommon.Configurations.Configuration
+                .Create()
+                .UseAutofac()
+                .RegisterCommonComponents()
+                .UseLog4Net()
+                .UseJsonNet()
+                .RegisterUnhandledExceptionHandler()
+                .RegisterEQueueComponents();
+
 
             HostFactory.Run(x => {
 

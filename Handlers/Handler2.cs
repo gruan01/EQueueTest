@@ -13,19 +13,12 @@ using System.Threading.Tasks;
 namespace Handlers {
 
 
-    [Export(typeof(IMessageHandler))]
-    [EQueueSet(Const.Group, Const.TOPIC_2)]
+    [Export(typeof(BaseHandler))]
     public class Handler2 : BaseHandler<TextMessage> {
 
 
-        [Import]
-        public ILog Logger {
-            get;
-            set;
-        }
-
         public override Task<bool> Handle(TextMessage data, EQueue.Protocols.QueueMessage message) {
-            this.Logger.Info(data);
+            this.Logger.Value.Info(data);
             return Task.FromResult(true);
         }
     }
