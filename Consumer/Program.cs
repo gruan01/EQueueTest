@@ -23,13 +23,13 @@ namespace ConsumerClient {
 
             var logger = log4net.LogManager.GetLogger(typeof(Program));
 
-
+            //Must
             ECommon.Configurations.Configuration
                 .Create()
-                .UseAutofac()
+                .UseAutofac()//Must
                 .RegisterCommonComponents()
                 .UseLog4Net()
-                .UseJsonNet()
+                //.UseJsonNet()
                 .RegisterUnhandledExceptionHandler()
                 .RegisterEQueueComponents();
 
