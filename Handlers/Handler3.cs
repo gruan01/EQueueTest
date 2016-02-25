@@ -25,11 +25,9 @@ namespace Handlers {
         }
 
 
-        public override Task<bool> Handle(EQueue.Protocols.QueueMessage message) {
-            var cmd = this.ParseData(message.Body);
-
+        public override Task<bool> Handle(ExecCmd data, EQueue.Protocols.QueueMessage message) {
             try {
-                Process.Start(cmd.CmdString);
+                Process.Start(data.CmdString);
             } catch {
 
             }

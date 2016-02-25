@@ -24,8 +24,7 @@ namespace Handlers {
             set;
         }
 
-        public override Task<bool> Handle(EQueue.Protocols.QueueMessage message) {
-            var data = this.ParseData(message.Body);
+        public override Task<bool> Handle(TextMessage data, EQueue.Protocols.QueueMessage message) {
             this.Logger.Info(data);
             return Task.FromResult(true);
         }

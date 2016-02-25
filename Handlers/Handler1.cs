@@ -24,11 +24,9 @@ namespace Handlers {
             set;
         }
 
-        public async override Task<bool> Handle(QueueMessage message) {
-            var req = this.ParseData(message.Body);
-
+        public async override Task<bool> Handle(UrlRequest data, QueueMessage message) {
             using (var client = new WebClient()) {
-                var ctx = await client.DownloadStringTaskAsync(req.RequestUri);
+                var ctx = await client.DownloadStringTaskAsync(data.RequestUri);
             }
 
             return true;
